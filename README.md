@@ -19,3 +19,9 @@ Usage:
 
 Notes:
 * requirements.txt has opencv and pillow which aren't actively being used right now
+
+Next steps:
+* Add more image processing functions to `skimaging.py`
+* Move to AWS/GCP instead of ngrok
+** Find way to programatically update twilio webhook address
+* Remove test files and opencv/pillow files
