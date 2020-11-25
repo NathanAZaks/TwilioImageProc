@@ -7,15 +7,17 @@ To Install:
 
 To run server:
 * navigate to ngrok folder
-** run `ngrok http 5000`
+  * run `ngrok http 5000`
 * in another terminal window
-** run `python3 app.py`
+  * run `python3 app.py`
 
 Usage:
 * update target webhook from twilio console as proper ngrok URL
 * text 703-546-9420:
-** a picture and it will process the image
-** a number between 1-893 and it will return the pokemon name that corresponds to that pokemon number
+  * a picture and it will process the image
+  * a picture and either 'a' or 'b'
+    * 'a' will return black and white
+    * 'b' will return threshold segmentation image
 
 Notes:
 * requirements.txt has opencv and pillow which aren't actively being used right now
@@ -23,5 +25,5 @@ Notes:
 Next steps:
 * Add more image processing functions to `skimaging.py`
 * Move to AWS/GCP instead of ngrok
-** Find way to programatically update twilio webhook address
+  * Find way to programatically update twilio webhook address
 * Remove test files and opencv/pillow files
