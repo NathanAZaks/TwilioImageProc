@@ -27,3 +27,7 @@ Next steps:
 * Move to AWS/GCP instead of ngrok
   * Find way to programatically update twilio webhook address
 * Remove test files and opencv/pillow files
+* Make default user choice into nothing and send back the editing options
+  * For line that does image proc, do a if user choice in editing options and remove ones in user choice picker
+* Fix the bad and weird filters/image processes
+* Delete all the twilio media files and automatically delete new ones when done

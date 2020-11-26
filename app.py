@@ -1,7 +1,7 @@
 # from pokemon import get_pokemon_name
 # from pillow import img_to_gray
 # from opencv import img_to_gray
-from skimaging import segmentation, img_to_gray
+from skimaging import segmentation, img_to_gray, hist_equalization, hist_segment, mask_convolution
 
 from flask import Flask, request, send_from_directory
 from twilio.twiml.messaging_response import Body, Media, Message, MessagingResponse
@@ -17,7 +17,7 @@ ngrok_public_url = requests.get("http://127.0.0.1:4040/api/tunnels").json()['tun
 
 UPLOAD_FOLDER = os.getcwd() + '/images' # CHANGE TO BACKSLASH FOR WINDOWS
 
-image_proc_options = {"a": img_to_gray, "b": segmentation}
+image_proc_options = {"a": img_to_gray, "b": segmentation, "c": hist_equalization, "d": hist_segment, "e": mask_convolution}
 
 app = Flask(__name__)
 
@@ -36,7 +36,7 @@ def inbound_sms():
 			image_proc_choice = "a"
 
 		response = MessagingResponse()
-		response.message("Thanks for the picture! I'll be right back with the edited photo. BTW, send 'a' or 'b' with a picture to make it B/W or to segment it. I default 'a'.")
+		response.message("Thanks for the picture! I'll be right back with the edited photo. I default make the image black and white.")
 
 		filename = request.form['MessageSid'] + '.jpeg'
 		with open('{}/{}'.format(UPLOAD_FOLDER, filename), 'wb') as f: # Open file
@@ -56,7 +56,7 @@ def inbound_sms():
 		# response.message('Thanks for texting! Pokemon %s is %s' % (pokemon_number, get_pokemon_name(pokemon_number).capitalize()))
 
 		response = MessagingResponse()
-		response.message("Try sending one photo with either 'a' for black/white or 'b' for segmentation")
+		response.message("Try sending one photo with either 'a' for black/white or 'b' for segmentation or 'c' for histogram equaliztion or 'd' for histogram segmentation or 'e' for mask convolve")
 
     # Grab the relevant phone numbers.
 	from_number = request.form['From']
