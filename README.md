@@ -27,7 +27,8 @@ Next steps:
 * Move to AWS/GCP instead of ngrok
   * Find way to programatically update twilio webhook address
 * Remove test files and opencv/pillow files
-* Make default user choice into nothing and send back the editing options
-  * For line that does image proc, do a if user choice in editing options and remove ones in user choice picker
-* Fix the bad and weird filters/image processes
 * Delete all the twilio media files and automatically delete new ones when done
+* When checking for BW flag, check for if no flag
+* None of the text body for the responses is working I don't think
+* Make all the functions similar to adaptive_hist_equal
+* Figure out the lossy conversion error

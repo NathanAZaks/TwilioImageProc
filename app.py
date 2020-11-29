@@ -1,8 +1,6 @@
-# from pokemon import get_pokemon_name
-# from pillow import img_to_gray
-# from opencv import img_to_gray
-from skimaging import segmentation, img_to_gray, hist_equalization, hist_segment, mask_convolution
-
+from skimaging import *
+from skimage import io, img_as_ubyte
+from skimage.color import rgb2gray
 from flask import Flask, request, send_from_directory
 from twilio.twiml.messaging_response import Body, Media, Message, MessagingResponse
 from twilio.rest import Client
@@ -11,13 +9,17 @@ import requests
 import os
 
 # Account SID and Auth Token from www.twilio.com/console
-client = Client('ACcecd8dc1f34f143557d2fe713048f71f', '3024182f46dc1f3d0d37d953e9a39856')
+ACCOUNT_SID = 'ACcecd8dc1f34f143557d2fe713048f71f'
+AUTH_TOKEN = '3024182f46dc1f3d0d37d953e9a39856'
+client = Client(ACCOUNT_SID, AUTH_TOKEN)
 
 ngrok_public_url = requests.get("http://127.0.0.1:4040/api/tunnels").json()['tunnels'][0]['public_url']
 
 UPLOAD_FOLDER = os.getcwd() + '/images' # CHANGE TO BACKSLASH FOR WINDOWS
 
-image_proc_options = {"a": img_to_gray, "b": segmentation, "c": hist_equalization, "d": hist_segment, "e": mask_convolution}
+image_proc_options = {"a": img_to_gray, "b": segmentation, "c": hist_equalization, "d": hist_segment, "e": mask_convolution, "f": gauss_blur, "g": unsharp, "h": adaptive_hist_equal, "i": manual_unsharp}
+
+editing_string = "Send one picture with one of the following options:\na: Black and white\nb: Mean Threshold Segmentation\nc: Histogram Equalization\nd: Histogram Equalization Segmentation\ne: Mask Convolution\nf: Gaussian Blur\ng: Unsharpening Mask\nh: Adaptive Histogram Equalization\ni: Sharpen"
 
 app = Flask(__name__)
 
@@ -30,33 +32,44 @@ def inbound_sms():
 
 		if request.form['Body']: # Take first word of text and lowercase
 			image_proc_choice = request.form['Body'].split()[0].lower()
+			bw_option = request.form['Body'].split()[1].lower()
 			if image_proc_choice not in image_proc_options:
-				image_proc_choice = "a"
+				image_proc_choice = 0
 		else:
-			image_proc_choice = "a"
+			image_proc_choice = 0
+
+		if image_proc_choice == 0:
+			response = MessagingResponse()
+			response.message(editing_string)
+			return str(response)
 
 		response = MessagingResponse()
-		response.message("Thanks for the picture! I'll be right back with the edited photo. I default make the image black and white.")
+		response.message("Thanks for the picture! I'll be right back with the edited photo.")
 
 		filename = request.form['MessageSid'] + '.jpeg'
-		with open('{}/{}'.format(UPLOAD_FOLDER, filename), 'wb') as f: # Open file
+		file_path = '{}/{}'.format(UPLOAD_FOLDER, filename)
+
+		with open(file_path, 'wb') as f: # Open file
 			f.write(requests.get(image_url).content)
 
-		image_proc_options[image_proc_choice]('{}/{}'.format(UPLOAD_FOLDER, filename)) # Image Processing
+		if bw_option == 'bw':
+			img = rgb2gray(io.imread(file_path))
+		else:
+			img = io.imread(file_path)
 
+		output = img_as_float(image_proc_options[image_proc_choice](img)) # Image Processing
+		io.imsave(file_path, output)
+
+
+		response = MessagingResponse()
 		with response.message() as message:
-			# message.body = "{0}".format("Here's your image in black and white.")
-			message.body = "{0}".format("Here's your segmented image.")
+			message.body = "{0}".format("Here's your image.") # THIS TEXT IS NOT WORKING
 			message.media(ngrok_public_url + '/uploads/{}'.format(filename))
 
 	else:
-		# pokemon_number = urllib.parse.quote(request.form['Body'])
-		#
-		# response = MessagingResponse()
-		# response.message('Thanks for texting! Pokemon %s is %s' % (pokemon_number, get_pokemon_name(pokemon_number).capitalize()))
-
 		response = MessagingResponse()
-		response.message("Try sending one photo with either 'a' for black/white or 'b' for segmentation or 'c' for histogram equaliztion or 'd' for histogram segmentation or 'e' for mask convolve")
+		response.message(editing_string)
+		return str(response)
 
     # Grab the relevant phone numbers.
 	from_number = request.form['From']
@@ -67,7 +80,7 @@ def inbound_sms():
 
 # A route to handle uploading images
 @app.route('/uploads/<filename>', methods=['GET', 'POST'])
-def uploaded_file(filename):
+def upload_file(filename):
 	return send_from_directory(UPLOAD_FOLDER, filename)
 
 if __name__ == '__main__':

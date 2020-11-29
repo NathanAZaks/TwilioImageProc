@@ -1,56 +1,27 @@
 import skimage
 from skimage.color import rgb2gray
-from skimage import io, img_as_ubyte
+from skimage import io, img_as_ubyte, img_as_float, exposure
+from skimage.filters import gaussian, gabor, laplace, unsharp_mask, try_all_threshold
+# Gaussian: blur, gabor: edge detection, laplace: edge detection
 import numpy as np
-
+from scipy import ndimage
+import matplotlib.pyplot as plt
+from skimage import data
+from skimage.color.adapt_rgb import adapt_rgb, each_channel
 
 image_path = '/Users/nathanzaks/Stevens/Schoolwork/CPE462A_ImageProc/Project/TwilioImageProc/images/img.jpg'
 
-img = io.imread(image_path)
-img
-img.imshow()
-
-gray = rgb2gray(img)
-gray
-
-new_gray = gray
-
-mean = np.mean(gray)
-mean
-
-img
-
-type(img)
-
-gray.shape
-io.imshow(gray)
-
-x = 0
-y = 0
-
-gray
-
-seg = (gray > mean)
-
-seg
-io.imshow(seg)
-
-new_gray
-io.imshow(new_gray)
+img = img_as_float(io.imread(image_path))
+gray = img_as_float(rgb2gray(img))
 
 io.imshow(gray)
 
-x, y = (gray > mean).nonzero()
+@adapt_rgb(each_channel)
+def adaptive_hist_equal(image_path):
+    output = exposure.equalize_adapthist(image_path, clip_limit = 0.03)
 
-vals = gray[x, y]
+    return output
 
-type(vals)
-
-type(y)
-
-io.imshow(vals)
-io.show()
-
-new_seg = img_as_ubyte(seg)
-
-io.imsave('/Users/nathanzaks/Stevens/Schoolwork/CPE462A_ImageProc/Project/TwilioImageProc/images/seg.jpeg', new_seg)
+new = adaptive_hist_equal(gray)
+io.imshow(new)
+io.imshow(gray)
