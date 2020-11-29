@@ -1,9 +1,7 @@
-opencv-python
 numpy
 flask
 twilio
 requests
-pillow
 scikit-image
 matplotlib
 scipy
