@@ -6,21 +6,17 @@ from skimage.color.adapt_rgb import adapt_rgb, each_channel
 import numpy as np
 from scipy import ndimage
 
-def img_to_gray(image_path, bw_option):
-    img = io.imread(image_path)
-    gray = rgb2gray(img)
-    io.imsave(image_path, gray)
+def img_to_gray(img):
+    return img
 
-def segmentation(image_path, bw_option):
-    img = io.imread(image_path)
-    gray = rgb2gray(img)
+@adapt_rgb(each_channel)
+def segmentation(img):
     mean = np.mean(gray)
     seg = (gray > mean)
-    output = img_as_ubyte(seg)
-    io.imsave(image_path, output)
+    return img_as_ubyte(seg)
 
-def hist_equalization(image_path, bw_option):
-    img = io.imread(image_path)
+@adapt_rgb(each_channel)
+def hist_equalization(img):
     gray = img_as_ubyte(rgb2gray(img))
     x_max = gray.shape[1]
     y_max = gray.shape[0]
@@ -56,10 +52,10 @@ def hist_equalization(image_path, bw_option):
             x += 1
         y += 1
 
-    io.imsave(image_path, output)
+    return img_as_ubyte(output)
 
-def hist_segment(image_path, bw_option): # This looks bad and weird
-    img = io.imread(image_path)
+@adapt_rgb(each_channel)
+def hist_segment(img): # This looks bad and weird
     gray = img_as_ubyte(rgb2gray(img))
     x_max = gray.shape[1]
     y_max = gray.shape[0]
@@ -98,41 +94,33 @@ def hist_segment(image_path, bw_option): # This looks bad and weird
     mean = np.mean(output)
     seg = (output > mean)
 
-    io.imsave(image_path, seg)
+    return img_as_ubyte(seg)
 
-def mask_convolution(image_path, bw_option): #This looks bad and weird - Unsharp mask
-    img = io.imread(image_path)
+@adapt_rgb(each_channel)
+def mask_convolution(img): #This looks bad and weird - Unsharp mask
     gray = img_as_ubyte(rgb2gray(img))
 
     mask = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
 
     output = ndimage.convolve(gray, mask, mode = 'constant', cval = 0.0)
 
-    io.imsave(image_path, output)
+    return img_as_ubyte(output)
 
-def gauss_blur(image_path, bw_option):
-    img = io.imread(image_path)
+@adapt_rgb(each_channel)
+def gauss_blur(img):
+    return img_as_ubyte(gaussian(img, sigma = 5, multichannel = True))
 
-    output = gaussian(img, sigma = 5, multichannel = True)
-
-    io.imsave(image_path, output)
-
-def unsharp(image_path, bw_option):
-    img = io.imread(image_path)
-
-    output = unsharp_mask(img, radius = 0.5, amount = 2)
-
-    io.imsave(image_path, output)
+@adapt_rgb(each_channel)
+def unsharp(img):
+    return img_as_ubyte(unsharp_mask(img, radius = 0.5, amount = 2))
 
 @adapt_rgb(each_channel)
 def adaptive_hist_equal(img):
-    return exposure.equalize_adapthist(img, clip_limit = 0.03)
+    return img_as_ubyte(exposure.equalize_adapthist(img, clip_limit = 0.03))
 
-def manual_unsharp(image_path, bw_option): # idk if this is doing anything
-    img = img_as_float(io.imread(image_path))
-
+@adapt_rgb(each_channel)
+def manual_unsharp(img): # idk if this is doing anything
     blurred = gaussian(img, sigma = 10.0, multichannel = True)
     sharper = img - blurred
 
-    output = img + (sharper * 0.8)
-    io.imsave(image_path, output)
+    return img_as_ubyte(img + (sharper * 0.8))

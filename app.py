@@ -19,7 +19,7 @@ UPLOAD_FOLDER = os.getcwd() + '/images' # CHANGE TO BACKSLASH FOR WINDOWS
 
 image_proc_options = {"a": img_to_gray, "b": segmentation, "c": hist_equalization, "d": hist_segment, "e": mask_convolution, "f": gauss_blur, "g": unsharp, "h": adaptive_hist_equal, "i": manual_unsharp}
 
-editing_string = "Send one picture with one of the following options:\na: Black and white\nb: Mean Threshold Segmentation\nc: Histogram Equalization\nd: Histogram Equalization Segmentation\ne: Mask Convolution\nf: Gaussian Blur\ng: Unsharpening Mask\nh: Adaptive Histogram Equalization\ni: Sharpen"
+editing_string = "Send one picture with one of the following options:\na bw: Black and white\nb: Mean Threshold Segmentation\nc: Histogram Equalization\nd: Histogram Equalization Segmentation\ne: Mask Convolution\nf: Gaussian Blur\ng: Unsharpening Mask\nh: Adaptive Histogram Equalization\ni: Sharpen\nSend 'bw' to process in black and white"
 
 app = Flask(__name__)
 
@@ -32,18 +32,24 @@ def inbound_sms():
 
 		if request.form['Body']: # Take first word of text and lowercase
 			image_proc_choice = request.form['Body'].split()[0].lower()
-			bw_option = request.form['Body'].split()[1].lower()
+
+			if request.form['Body'].split()[1]:
+				bw_option = request.form['Body'].split()[1].lower()
+			else:
+				bw_option = 'no'
+
 			if image_proc_choice not in image_proc_options:
 				image_proc_choice = 0
+
 		else:
 			image_proc_choice = 0
 
-		if image_proc_choice == 0:
+		if image_proc_choice == 0: # THIS TEXT WORKS
 			response = MessagingResponse()
 			response.message(editing_string)
 			return str(response)
 
-		response = MessagingResponse()
+		response = MessagingResponse() # THIS TEXT DOES NOT WORK
 		response.message("Thanks for the picture! I'll be right back with the edited photo.")
 
 		filename = request.form['MessageSid'] + '.jpeg'
@@ -67,7 +73,7 @@ def inbound_sms():
 			message.media(ngrok_public_url + '/uploads/{}'.format(filename))
 
 	else:
-		response = MessagingResponse()
+		response = MessagingResponse() # THIS TEXT WORKS
 		response.message(editing_string)
 		return str(response)
 

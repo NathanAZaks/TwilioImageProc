@@ -5,30 +5,23 @@ To Install:
 * go to 'https://ngrok.com/download', install, unzip
 * run `python3 -m pip install -r requirements.txt`
 
-To run server:
+To run software:
 * navigate to ngrok folder
-  * run `ngrok http 5000`
+  * run `./ngrok http 5000`
 * in another terminal window
   * run `python3 app.py`
 
 Usage:
-* update target webhook from twilio console as proper ngrok URL
+* update target sms webhook from twilio console as public ngrok URL
 * text 703-546-9420:
-  * a picture and it will process the image
-  * a picture and either 'a' or 'b'
-    * 'a' will return black and white
-    * 'b' will return threshold segmentation image
-
-Notes:
-* requirements.txt has opencv and pillow which aren't actively being used right now
+  * send a picture with a letter as the image editing option
+    * ex: "<img.jpeg> a"
+  * send a picture with a letter and 'wb' to process in black and white
+    * ex: "<img.png> b wb"
+  * send a picture without a letter, text without a picture, or a false editing option to receive a list of editing options
 
 Next steps:
-* Add more image processing functions to `skimaging.py`
+* Edit image processing functions to `skimaging.py`
 * Move to AWS/GCP instead of ngrok
-  * Find way to programatically update twilio webhook address
-* Remove test files and opencv/pillow files
-* Delete all the twilio media files and automatically delete new ones when done
-* When checking for BW flag, check for if no flag
-* None of the text body for the responses is working I don't think
-* Make all the functions similar to adaptive_hist_equal
-* Figure out the lossy conversion error
+* Delete all the twilio media files and programatically delete new ones
+* None of the text body for the responses is working
