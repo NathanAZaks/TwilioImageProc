@@ -19,7 +19,7 @@ UPLOAD_FOLDER = os.getcwd() + '/images' # CHANGE TO BACKSLASH FOR WINDOWS
 
 image_proc_options = {"a": img_to_gray, "b": segmentation, "c": hist_equalization, "d": hist_segment, "e": mask_convolution, "f": gauss_blur, "g": unsharp, "h": adaptive_hist_equal, "i": manual_unsharp}
 
-editing_string = "Send one picture with one of the following options:\na bw: Black and white\nb: Mean Threshold Segmentation\nc: Histogram Equalization\nd: Histogram Equalization Segmentation\ne: Mask Convolution\nf: Gaussian Blur\ng: Unsharpening Mask\nh: Adaptive Histogram Equalization\ni: Sharpen\nSend 'bw' to process in black and white"
+editing_string = "Send one picture with one of the following options:\na: Black and white\nb: Mean Threshold Segmentation\nc: Histogram Equalization\nd: Histogram Equalization Segmentation\ne: Mask Convolution\nf: Gaussian Blur\ng: Unsharpening Mask\nh: Adaptive Histogram Equalization\ni: Sharpen\nSend 'bw' to process in black and white"
 
 app = Flask(__name__)
 
@@ -27,15 +27,17 @@ app = Flask(__name__)
 @app.route('/sms', methods=['GET', 'POST'])
 def inbound_sms():
 
-	if int(request.values['NumMedia']) == 1: # if incoming message has media
+	response = MessagingResponse()
+
+	if int(request.values['NumMedia']) == 1: # Check if incoming message has media
 		image_url = request.values['MediaUrl0']
 
 		if request.form['Body']: # Take first word of text and lowercase
 			image_proc_choice = request.form['Body'].split()[0].lower()
 
-			if request.form['Body'].split()[1]:
+			try: # Check if there are two words where second is the b/w flag
 				bw_option = request.form['Body'].split()[1].lower()
-			else:
+			except IndexError: # If no second word
 				bw_option = 'no'
 
 			if image_proc_choice not in image_proc_options:
@@ -44,18 +46,16 @@ def inbound_sms():
 		else:
 			image_proc_choice = 0
 
-		if image_proc_choice == 0: # THIS TEXT WORKS
-			response = MessagingResponse()
+		if image_proc_choice == 0:
 			response.message(editing_string)
 			return str(response)
 
-		response = MessagingResponse() # THIS TEXT DOES NOT WORK
 		response.message("Thanks for the picture! I'll be right back with the edited photo.")
 
-		filename = request.form['MessageSid'] + '.jpeg'
+		filename = request.form['MessageSid'] + '.jpeg' # Call image file as message sid
 		file_path = '{}/{}'.format(UPLOAD_FOLDER, filename)
 
-		with open(file_path, 'wb') as f: # Open file
+		with open(file_path, 'wb') as f: # Open new file on this computer
 			f.write(requests.get(image_url).content)
 
 		if bw_option == 'bw':
@@ -63,17 +63,13 @@ def inbound_sms():
 		else:
 			img = io.imread(file_path)
 
-		output = img_as_float(image_proc_options[image_proc_choice](img)) # Image Processing
-		io.imsave(file_path, output)
+		output = image_proc_options[image_proc_choice](img) # Image Processing
+		io.imsave(file_path, output) # Save edited image to original file path
 
+		response.message().media(ngrok_public_url + '/uploads/{}'.format(filename)) # Send back edited image
+		response.message("Here's your edited image.")
 
-		response = MessagingResponse()
-		with response.message() as message:
-			message.body = "{0}".format("Here's your image.") # THIS TEXT IS NOT WORKING
-			message.media(ngrok_public_url + '/uploads/{}'.format(filename))
-
-	else:
-		response = MessagingResponse() # THIS TEXT WORKS
+	else: # Incoming message has no media - send back editing instructions
 		response.message(editing_string)
 		return str(response)
 

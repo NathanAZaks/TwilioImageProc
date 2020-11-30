@@ -22,6 +22,10 @@ Usage:
 
 Next steps:
 * Edit image processing functions to `skimaging.py`
+  * Add Gabor Edge Detection Function
+    * Example in `skimage_test.py`
+  * Add Laplace Edge Detection Function
+    * Example in `skimage_test.py`
 * Move to AWS/GCP instead of ngrok
 * Delete all the twilio media files and programatically delete new ones
 * None of the text body for the responses is working

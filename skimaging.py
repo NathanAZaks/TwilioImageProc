@@ -7,20 +7,23 @@ import numpy as np
 from scipy import ndimage
 
 def img_to_gray(img):
-    return img
+    if not len(img.shape) < 3:
+        img = rgb2gray(img)
+    return img_as_ubyte(img)
 
 @adapt_rgb(each_channel)
 def segmentation(img):
-    mean = np.mean(gray)
-    seg = (gray > mean)
+    mean = np.mean(img)
+    seg = (img > mean)
     return img_as_ubyte(seg)
 
 @adapt_rgb(each_channel)
 def hist_equalization(img):
-    gray = img_as_ubyte(rgb2gray(img))
-    x_max = gray.shape[1]
-    y_max = gray.shape[0]
-    total = gray.size
+    # gray = img_as_ubyte(rgb2gray(img)) #Change all Gray to img
+    img = img_as_ubyte(img)
+    x_max = img.shape[1]
+    y_max = img.shape[0]
+    total = img.size
     hist = [0] * 256
     equ_hist = hist
 
@@ -28,7 +31,7 @@ def hist_equalization(img):
     while y < y_max:
         x = 0
         while x < x_max:
-            hist[gray[y, x]] += 1
+            hist[img[y, x]] += 1
             x += 1
         y += 1
 
@@ -36,7 +39,7 @@ def hist_equalization(img):
     equ_hist = hist
     value = 0
 
-    output = gray
+    output = img
 
     while value < 255:
         hist[value] /= total
@@ -48,7 +51,7 @@ def hist_equalization(img):
     while y < y_max:
         x = 0
         while x < x_max:
-            output[y,x] = equ_hist[(gray[y,x])]
+            output[y,x] = equ_hist[(img[y,x])]
             x += 1
         y += 1
 
@@ -56,10 +59,11 @@ def hist_equalization(img):
 
 @adapt_rgb(each_channel)
 def hist_segment(img): # This looks bad and weird
-    gray = img_as_ubyte(rgb2gray(img))
-    x_max = gray.shape[1]
-    y_max = gray.shape[0]
-    total = gray.size
+    # gray = img_as_ubyte(rgb2gray(img)) # Change all gray to img
+    img = img_as_ubyte(img)
+    x_max = img.shape[1]
+    y_max = img.shape[0]
+    total = img.size
     hist = [0] * 256
     equ_hist = hist
 
@@ -67,7 +71,7 @@ def hist_segment(img): # This looks bad and weird
     while y < y_max:
         x = 0
         while x < x_max:
-            hist[gray[y, x]] += 1
+            hist[img[y, x]] += 1
             x += 1
         y += 1
 
@@ -75,7 +79,7 @@ def hist_segment(img): # This looks bad and weird
     equ_hist = hist
     value = 0
 
-    output = gray
+    output = img
 
     while value < 255:
         hist[value] /= total
@@ -87,7 +91,7 @@ def hist_segment(img): # This looks bad and weird
     while y < y_max:
         x = 0
         while x < x_max:
-            output[y,x] = equ_hist[(gray[y,x])]
+            output[y,x] = equ_hist[(img[y,x])]
             x += 1
         y += 1
 
@@ -98,29 +102,31 @@ def hist_segment(img): # This looks bad and weird
 
 @adapt_rgb(each_channel)
 def mask_convolution(img): #This looks bad and weird - Unsharp mask
-    gray = img_as_ubyte(rgb2gray(img))
-
     mask = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
 
-    output = ndimage.convolve(gray, mask, mode = 'constant', cval = 0.0)
+    output = img_as_ubyte(ndimage.convolve(img, mask, mode = 'constant', cval = 0.0))
 
-    return img_as_ubyte(output)
+    return output
 
 @adapt_rgb(each_channel)
 def gauss_blur(img):
-    return img_as_ubyte(gaussian(img, sigma = 5, multichannel = True))
+    output = img_as_ubyte(gaussian(img, sigma = 5, multichannel = True))
+    return output
 
 @adapt_rgb(each_channel)
-def unsharp(img):
-    return img_as_ubyte(unsharp_mask(img, radius = 0.5, amount = 2))
+def unsharp(img): # Edit the values to make it look better
+    output = img_as_ubyte(unsharp_mask(img, radius = 2, amount = 5))
+    return output
 
 @adapt_rgb(each_channel)
 def adaptive_hist_equal(img):
-    return img_as_ubyte(exposure.equalize_adapthist(img, clip_limit = 0.03))
+    output = img_as_ubyte(exposure.equalize_adapthist(img, clip_limit = 0.03))
+    return output
 
 @adapt_rgb(each_channel)
-def manual_unsharp(img): # idk if this is doing anything
+def manual_unsharp(img): # Looks bad, lossy conversion warning
+    img = img_as_float(img)
     blurred = gaussian(img, sigma = 10.0, multichannel = True)
     sharper = img - blurred
-
-    return img_as_ubyte(img + (sharper * 0.8))
+    output = img + (sharper * 0.8)
+    return output
