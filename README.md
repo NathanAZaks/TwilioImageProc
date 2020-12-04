@@ -8,6 +8,8 @@ To Install:
 To run software:
 * navigate to ngrok folder
   * run `./ngrok http 5000`
+* create a file `config.py` with:
+  * `ACCOUNT_SID` AND `AUTH_TOKEN` taken from twilio
 * in another terminal window
   * run `python3 app.py`
 

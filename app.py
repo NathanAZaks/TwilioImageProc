@@ -1,4 +1,6 @@
 from skimaging import *
+import config
+
 from skimage import io, img_as_ubyte
 from skimage.color import rgb2gray
 from flask import Flask, request, send_from_directory
@@ -8,12 +10,9 @@ import urllib
 import requests
 import os
 
-# Account SID and Auth Token from www.twilio.com/console
-ACCOUNT_SID = 'ACcecd8dc1f34f143557d2fe713048f71f'
-AUTH_TOKEN = '3024182f46dc1f3d0d37d953e9a39856'
-client = Client(ACCOUNT_SID, AUTH_TOKEN)
+client = Client(config.ACCOUNT_SID, config.AUTH_TOKEN)
 
-ngrok_public_url = requests.get("http://127.0.0.1:4040/api/tunnels").json()['tunnels'][0]['public_url']
+ngrok_public_url = requests.get("http://127.0.0.1:4040/api/tunnels").json()['tunnels'][0]['public_url'] # Get Public ngrok URL via internal ngrok api
 
 UPLOAD_FOLDER = os.getcwd() + '/images' # CHANGE TO BACKSLASH FOR WINDOWS
 
@@ -27,7 +26,7 @@ app = Flask(__name__)
 @app.route('/sms', methods=['GET', 'POST'])
 def inbound_sms():
 
-	response = MessagingResponse()
+	response = MessagingResponse() #initiate twilio response object
 
 	if int(request.values['NumMedia']) == 1: # Check if incoming message has media
 		image_url = request.values['MediaUrl0']
@@ -46,7 +45,7 @@ def inbound_sms():
 		else:
 			image_proc_choice = 0
 
-		if image_proc_choice == 0:
+		if image_proc_choice == 0: # If no/incorrect editing option, send back instructions
 			response.message(editing_string)
 			return str(response)
 
