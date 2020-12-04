@@ -1,5 +1,5 @@
 # TwilioImageProc
-Image Processing with SMS Interface via Twilio
+SciKit Image Processing with SMS Interface via Twilio
 
 To Install:
 * go to 'https://ngrok.com/download', install, unzip
@@ -20,7 +20,8 @@ Usage:
     * ex: "<img.jpeg> a"
   * send a picture with a letter and 'wb' to process in black and white
     * ex: "<img.png> b wb"
-  * send a picture without a letter, text without a picture, or a false editing option to receive a list of editing options
+  * send a picture without a letter, text without a picture, or an incorrect editing option to receive a list of editing options
+* files set up for linux/mac. Check App.py to change / to \ for windows compatability
 
 Next steps:
 * Edit image processing functions to `skimaging.py`
@@ -30,4 +31,3 @@ Next steps:
     * Example in `skimage_test.py`
 * Move to AWS/GCP instead of ngrok
 * Delete all the twilio media files and programatically delete new ones
-* None of the text body for the responses is working
