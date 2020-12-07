@@ -59,7 +59,7 @@ def hist_equalization(img):
 
 @adapt_rgb(each_channel)
 def hist_segment(img): # This looks bad and weird
-    # gray = img_as_ubyte(rgb2gray(img)) # Change all gray to img
+    # just run ^^ above function and continue from there
     img = img_as_ubyte(img)
     x_max = img.shape[1]
     y_max = img.shape[0]

@@ -3,6 +3,7 @@ SciKit Image Processing with SMS Interface via Twilio
 
 To Install Dependencies:
 * go to 'https://ngrok.com/download', install, unzip
+  * This project using version 2.3.35
 * run `python3 -m pip install -r requirements.txt`
 
 To run software:
@@ -10,6 +11,9 @@ To run software:
   * run `./ngrok http 5000`
 * create a file `config.py` with:
   * `ACCOUNT_SID` AND `AUTH_TOKEN` taken from twilio
+  * ex:
+    * `ACCOUNT_SID = "sid_goes_here"`
+    * `AUTH_TOKEN = "auth_token_goes_here"`
 * in another terminal window
   * run `python3 app.py`
 * update target sms webhook from twilio console as public ngrok URL
@@ -36,5 +40,6 @@ Next steps:
     * Example in `skimage_test.py`
   * Add Laplace Edge Detection Function
     * Example in `skimage_test.py`
+  * Fix hist_segment function
 * Move to AWS/GCP instead of ngrok
 * Delete all the Twilio media files and programmatically delete new ones
