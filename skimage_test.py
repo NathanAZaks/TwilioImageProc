@@ -1,3 +1,5 @@
+# Remove before final submission
+
 import skimage
 from skimage.color import rgb2gray
 from skimage import io, img_as_ubyte, img_as_float, exposure

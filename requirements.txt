@@ -3,5 +3,4 @@ flask
 twilio
 requests
 scikit-image
-matplotlib
 scipy

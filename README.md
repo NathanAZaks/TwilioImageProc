@@ -1,7 +1,7 @@
 # TwilioImageProc
 SciKit Image Processing with SMS Interface via Twilio
 
-To Install:
+To Install Dependencies:
 * go to 'https://ngrok.com/download', install, unzip
 * run `python3 -m pip install -r requirements.txt`
 
@@ -12,16 +12,23 @@ To run software:
   * `ACCOUNT_SID` AND `AUTH_TOKEN` taken from twilio
 * in another terminal window
   * run `python3 app.py`
+* update target sms webhook from twilio console as public ngrok URL
+
+Twiilio Instructions:
+* Create a Twilio account
+  * This will give you demo credits which are sufficient to run this project for a while
+* Buy a phone number from Twilio (with the demo credits $) that is capable of SMS
+* Configure the Primary SMS Webhook for the phone number inside of the Twilio console
+  * The correct webhook address taken from 'Forwarding' line from ngrok window: 'https://yourngrokurl.ngrok.io/sms'
 
 Usage:
-* update target sms webhook from twilio console as public ngrok URL
-* text 703-546-9420:
+* text twilio phone number:
   * send a picture with a letter as the image editing option
     * ex: "<img.jpeg> a"
-  * send a picture with a letter and 'wb' to process in black and white
-    * ex: "<img.png> b wb"
-  * send a picture without a letter, text without a picture, or an incorrect editing option to receive a list of editing options
-* files set up for linux/mac. Check App.py to change / to \ for windows compatability
+  * send a picture with a letter and 'bw' to process in black and white
+    * ex: "<img.png> b bw"
+  * send a picture without a letter, text without a picture, or an incorrect editing option (any other format) to receive a list of editing options
+* files set up for linux/mac. Check App.py to change / to \ for windows filesystem compatibility
 
 Next steps:
 * Edit image processing functions to `skimaging.py`
@@ -30,4 +37,4 @@ Next steps:
   * Add Laplace Edge Detection Function
     * Example in `skimage_test.py`
 * Move to AWS/GCP instead of ngrok
-* Delete all the twilio media files and programatically delete new ones
+* Delete all the Twilio media files and programmatically delete new ones
