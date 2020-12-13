@@ -1,7 +1,7 @@
 import skimage
 from skimage import io, img_as_ubyte, exposure, img_as_float
 from skimage.color import rgb2gray
-from skimage.filters import gaussian, unsharp_mask, try_all_threshold
+from skimage.filters import gaussian, unsharp_mask
 from skimage.color.adapt_rgb import adapt_rgb, each_channel
 import numpy as np
 from scipy import ndimage
@@ -60,40 +60,42 @@ def hist_equalization(img):
 @adapt_rgb(each_channel)
 def hist_segment(img): # This looks bad and weird
     # just run ^^ above function and continue from there
-    img = img_as_ubyte(img)
-    x_max = img.shape[1]
-    y_max = img.shape[0]
-    total = img.size
-    hist = [0] * 256
-    equ_hist = hist
+    # img = img_as_ubyte(img)
+    # x_max = img.shape[1]
+    # y_max = img.shape[0]
+    # total = img.size
+    # hist = [0] * 256
+    # equ_hist = hist
+    #
+    # y = 0
+    # while y < y_max:
+    #     x = 0
+    #     while x < x_max:
+    #         hist[img[y, x]] += 1
+    #         x += 1
+    #     y += 1
+    #
+    # running_pct = 0
+    # equ_hist = hist
+    # value = 0
+    #
+    # output = img
+    #
+    # while value < 255:
+    #     hist[value] /= total
+    #     running_pct += hist[value]
+    #     equ_hist[value] = round(255 * running_pct)
+    #     value += 1
+    #
+    # y = 0
+    # while y < y_max:
+    #     x = 0
+    #     while x < x_max:
+    #         output[y,x] = equ_hist[(img[y,x])]
+    #         x += 1
+    #     y += 1
 
-    y = 0
-    while y < y_max:
-        x = 0
-        while x < x_max:
-            hist[img[y, x]] += 1
-            x += 1
-        y += 1
-
-    running_pct = 0
-    equ_hist = hist
-    value = 0
-
-    output = img
-
-    while value < 255:
-        hist[value] /= total
-        running_pct += hist[value]
-        equ_hist[value] = round(255 * running_pct)
-        value += 1
-
-    y = 0
-    while y < y_max:
-        x = 0
-        while x < x_max:
-            output[y,x] = equ_hist[(img[y,x])]
-            x += 1
-        y += 1
+    output = hist_equalization(img)
 
     mean = np.mean(output)
     seg = (output > mean)
