@@ -34,6 +34,16 @@ Usage:
   * send a picture without a letter, text without a picture, or an incorrect editing option (any other format) to receive a list of editing options
 * files set up for linux/mac. Check App.py to change / to \ for windows filesystem compatibility
 
+Testing:
+* `testing.py` can be used to test the various image processing functions without the Twilio aspect
+* To use:
+  * navigate to code folder in terminal
+  * run `python3 testing.py`
+  * follow on screen directions:
+    * enter an editing option
+    * enter a b/w option
+    * code will loop until editing option not in list
+
 Next steps:
 * Add more editing functions
 * Move to AWS/GCP instead of ngrok
