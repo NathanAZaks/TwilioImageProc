@@ -19,7 +19,6 @@ def segmentation(img):
 
 @adapt_rgb(each_channel)
 def hist_equalization(img):
-    # gray = img_as_ubyte(rgb2gray(img)) #Change all Gray to img
     img = img_as_ubyte(img)
     x_max = img.shape[1]
     y_max = img.shape[0]
@@ -58,43 +57,7 @@ def hist_equalization(img):
     return img_as_ubyte(output)
 
 @adapt_rgb(each_channel)
-def hist_segment(img): # This looks bad and weird
-    # just run ^^ above function and continue from there
-    # img = img_as_ubyte(img)
-    # x_max = img.shape[1]
-    # y_max = img.shape[0]
-    # total = img.size
-    # hist = [0] * 256
-    # equ_hist = hist
-    #
-    # y = 0
-    # while y < y_max:
-    #     x = 0
-    #     while x < x_max:
-    #         hist[img[y, x]] += 1
-    #         x += 1
-    #     y += 1
-    #
-    # running_pct = 0
-    # equ_hist = hist
-    # value = 0
-    #
-    # output = img
-    #
-    # while value < 255:
-    #     hist[value] /= total
-    #     running_pct += hist[value]
-    #     equ_hist[value] = round(255 * running_pct)
-    #     value += 1
-    #
-    # y = 0
-    # while y < y_max:
-    #     x = 0
-    #     while x < x_max:
-    #         output[y,x] = equ_hist[(img[y,x])]
-    #         x += 1
-    #     y += 1
-
+def hist_segment(img):
     output = hist_equalization(img)
 
     mean = np.mean(output)
@@ -103,7 +66,7 @@ def hist_segment(img): # This looks bad and weird
     return img_as_ubyte(seg)
 
 @adapt_rgb(each_channel)
-def mask_convolution(img): #This looks bad and weird - Unsharp mask
+def mask_convolution(img):
     mask = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
 
     output = img_as_ubyte(ndimage.convolve(img, mask, mode = 'constant', cval = 0.0))
@@ -116,7 +79,7 @@ def gauss_blur(img):
     return output
 
 @adapt_rgb(each_channel)
-def unsharp(img): # Edit the values to make it look better
+def unsharp(img):
     output = img_as_ubyte(unsharp_mask(img, radius = 2, amount = 5))
     return output
 
@@ -126,7 +89,7 @@ def adaptive_hist_equal(img):
     return output
 
 @adapt_rgb(each_channel)
-def manual_unsharp(img): # Looks bad, lossy conversion warning
+def manual_unsharp(img):
     img = img_as_float(img)
     blurred = gaussian(img, sigma = 10.0, multichannel = True)
     sharper = img - blurred

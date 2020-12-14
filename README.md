@@ -35,11 +35,6 @@ Usage:
 * files set up for linux/mac. Check App.py to change / to \ for windows filesystem compatibility
 
 Next steps:
-* Edit image processing functions to `skimaging.py`
-  * Add Gabor Edge Detection Function
-    * Example in `skimage_test.py`
-  * Add Laplace Edge Detection Function
-    * Example in `skimage_test.py`
-  * Fix hist_segment function
+* Add more editing functions
 * Move to AWS/GCP instead of ngrok
 * Delete all the Twilio media files and programmatically delete new ones
