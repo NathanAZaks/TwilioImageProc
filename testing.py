@@ -11,10 +11,10 @@ bw_option = 'a'
 
 image_path = './images/img.jpg'
 
-print("Input one of the following options:\na: Black and white\nb: Mean Threshold Segmentation\nc: Histogram Equalization\nd: Histogram Equalization Segmentation\ne: Mask Convolution\nf: Gaussian Blur\ng: Unsharpening Mask\nh: Adaptive Histogram Equalization\ni: Sharpen\nAnything else to quit.")
+print("Editing options:\na: Black and white\nb: Mean Threshold Segmentation\nc: Histogram Equalization\nd: Histogram Equalization Segmentation\ne: Mask Convolution\nf: Gaussian Blur\ng: Unsharpening Mask\nh: Adaptive Histogram Equalization\ni: Sharpen\nAnything else to quit.")
 
 while(True):
-    image_proc_choice = input("Enter one of the editing options letters:\n")
+    image_proc_choice = input("Enter one of the editing options letters:\n").lower()
     if image_proc_choice not in image_proc_options:
         print("Not valid option")
         # sys.exit()
