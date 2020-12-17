@@ -1,13 +1,15 @@
 from skimaging import *
-from skimage import io
+from skimage import io, img_as_ubyte
 from skimage.color import rgb2gray
+from matplotlib import pyplot as plt
+import sys
 
 image_proc_options = {"a": img_to_gray, "b": segmentation, "c": hist_equalization, "d": hist_segment, "e": mask_convolution, "f": gauss_blur, "g": unsharp, "h": adaptive_hist_equal, "i": manual_unsharp}
 
 image_proc_choice = 'a'
 bw_option = 'a'
 
-image_path = './images/img.jpg' # change to backslash for windows
+image_path = './images/img.jpg'
 
 print("Editing options:\na: Black and white\nb: Mean Threshold Segmentation\nc: Histogram Equalization\nd: Histogram Equalization Segmentation\ne: Mask Convolution\nf: Gaussian Blur\ng: Unsharpening Mask\nh: Adaptive Histogram Equalization\ni: Sharpen\nAnything else to quit.")
 
@@ -15,6 +17,7 @@ while(True):
     image_proc_choice = input("Enter one of the editing options letters:\n").lower()
     if image_proc_choice not in image_proc_options:
         print("Not valid option")
+        # sys.exit()
         break
 
     if image_proc_choice != 'a':

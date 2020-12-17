@@ -9,11 +9,11 @@ To Install Dependencies:
 To run software:
 * navigate to ngrok folder
   * run `./ngrok http 5000`
-* edit file `config.py` with:
+* create a file `config.py` with:
   * `ACCOUNT_SID` AND `AUTH_TOKEN` taken from twilio
   * ex:
-    * `ACCOUNT_SID = "your_sid_goes_here"`
-    * `AUTH_TOKEN = "your_auth_token_goes_here"`
+    * `ACCOUNT_SID = "sid_goes_here"`
+    * `AUTH_TOKEN = "auth_token_goes_here"`
 * in another terminal window
   * run `python3 app.py`
 * update target sms webhook from twilio console as public ngrok URL
