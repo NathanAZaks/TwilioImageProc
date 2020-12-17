@@ -1,6 +1,6 @@
 from skimaging import *
-
 import config
+
 from skimage import io, img_as_ubyte
 from skimage.color import rgb2gray
 from flask import Flask, request, send_from_directory
