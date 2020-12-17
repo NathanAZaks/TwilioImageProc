@@ -9,16 +9,16 @@ To Install Dependencies:
 To run software:
 * navigate to ngrok folder
   * run `./ngrok http 5000`
-* create a file `config.py` with:
+* update file `config.py` with:
   * `ACCOUNT_SID` AND `AUTH_TOKEN` taken from twilio
   * ex:
-    * `ACCOUNT_SID = "sid_goes_here"`
-    * `AUTH_TOKEN = "auth_token_goes_here"`
+    * `ACCOUNT_SID = "your_sid_goes_here"`
+    * `AUTH_TOKEN = "your_auth_token_goes_here"`
 * in another terminal window
   * run `python3 app.py`
 * update target sms webhook from twilio console as public ngrok URL
 
-Twiilio Instructions:
+Twilio Instructions:
 * Create a Twilio account
   * This will give you demo credits which are sufficient to run this project for a while
 * Buy a phone number from Twilio (with the demo credits $) that is capable of SMS
